@@ -1,0 +1,30 @@
+{
+  "subjects": [
+    "Math",
+    "Ukrainian",
+    "English",
+    "PE",
+    "Music",
+    "Art"
+  ],
+  "teachers": {
+    "Math": "T1",
+    "Ukrainian": "T1",
+    "English": "T2",
+    "PE": "T3",
+    "Music": "T4",
+    "Art": "T2"
+  },
+  "classes": [
+    "A",
+    "B"
+  ],
+  "main_teachers": {
+    "A": "T1",
+    "B": "T2"
+  },
+  "special_rooms": {
+    "PE": "Gym",
+    "Music": "MusicRoom"
+  }
+}
