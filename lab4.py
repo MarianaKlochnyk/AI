@@ -3,11 +3,6 @@ import random
 import json
 import matplotlib.pyplot as plt
 
-
-# ======================
-# Генерація карти міст
-# ======================
-
 def generate_map():
     N = random.randint(25, 35)
 
@@ -35,11 +30,6 @@ def load_data(filename="map_data.json"):
         data = json.load(f)
         return np.array(data["distances"]), np.array(data["coords"])
 
-
-# ======================
-# Мурашиний алгоритм
-# ======================
-
 class AntColony:
 
     def __init__(self,
@@ -65,7 +55,6 @@ class AntColony:
         dist_inv = 1.0 / (self.distances + np.eye(self.N) * 1e-9)
         self.eta = dist_inv ** self.beta
 
-    # довжина маршруту
     def calculate_length(self, route):
         length = sum(
             self.distances[route[i], route[i + 1]]
@@ -74,7 +63,6 @@ class AntColony:
         length += self.distances[route[-1], route[0]]
         return length
 
-    # побудова маршруту
     def construct_solution(self, move_probs):
 
         route = [random.randint(0, self.N - 1)]
@@ -95,7 +83,6 @@ class AntColony:
 
         return route
 
-    # запуск алгоритму
     def run(self):
 
         best_route = None
@@ -117,10 +104,8 @@ class AntColony:
                     best_len = length
                     best_route = route
 
-            # випаровування
             self.pheromone *= (1 - self.rho)
 
-            # оновлення феромонів
             for r, l in routes:
                 deposit = 100 / l
 
@@ -130,11 +115,6 @@ class AntColony:
                     self.pheromone[b][a] += deposit
 
         return best_route, best_len
-
-
-# ======================
-# MAIN
-# ======================
 
 if __name__ == "__main__":
 
@@ -177,10 +157,6 @@ if __name__ == "__main__":
                     f"Ants:{ants} | Rho:{rho} | a/b:{a}/{b} -> Avg Length: {avg:.2f}"
                 )
 
-    # ======================
-    # Фінальний маршрут
-    # ======================
-
     print("\nБудуємо фінальний маршрут...")
 
     final_colony = AntColony(
@@ -191,26 +167,19 @@ if __name__ == "__main__":
 
     best_path, best_dist = final_colony.run()
 
-    # ======================
-    # ВІЗУАЛІЗАЦІЯ
-    # ======================
-
     plt.figure(figsize=(10, 7))
 
-    # міста
     plt.scatter(coords[:, 0], coords[:, 1],
                 c='red',
                 edgecolors='black',
                 s=100,
                 zorder=3)
 
-    # підписи міст
     for i, (x, y) in enumerate(coords):
         plt.text(x + 5, y + 5, str(i),
                  fontsize=12,
                  fontweight='bold')
 
-    # стрілки маршруту
     for i in range(len(best_path)):
         p1 = best_path[i]
         p2 = best_path[(i + 1) % len(best_path)]
@@ -230,7 +199,6 @@ if __name__ == "__main__":
             alpha=0.7
         )
 
-    # START
     start_city = best_path[0]
     plt.scatter(coords[start_city, 0],
                 coords[start_city, 1],
@@ -239,7 +207,6 @@ if __name__ == "__main__":
                 label="START",
                 zorder=5)
 
-    # FINISH
     finish_city = best_path[-1]
     plt.scatter(coords[finish_city, 0],
                 coords[finish_city, 1],

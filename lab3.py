@@ -4,7 +4,6 @@ from sklearn.cluster import KMeans, AgglomerativeClustering
 from scipy.spatial.distance import cdist
 
 def generate_data(N=1000):
-    # точки на одиничному квадраті [0,1] x [0,1]
     data = np.random.rand(N, 2)
     return data
 

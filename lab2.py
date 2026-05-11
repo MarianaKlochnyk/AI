@@ -60,7 +60,7 @@ def plot_result(a, b, mode, x_in, y_in, x_out, y_out):
     plt.scatter(x_in, y_in, s=5, label="під графіком")
     plt.scatter(x_out, y_out, s=5, label="над графіком")
 
-    plt.title("Метод Монте-Карло (cos(x) + 1)")
+    plt.title("Метод Монте-Карло")
     plt.legend()
     plt.show()
 

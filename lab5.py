@@ -2,10 +2,8 @@ import random
 import json
 import os
 
-# --- КОНФІГУРАЦІЯ ТА ДАНІ ---
 subjects = ["Math", "Ukrainian", "English", "PE", "Music", "Art"]
 
-# Вчителі за спеціалізацією
 teachers = {
     "Math": "T1",
     "Ukrainian": "T1",
@@ -15,13 +13,11 @@ teachers = {
     "Art": "T2"
 }
 
-# Класні керівники для кожного класу
 main_teachers = {
     "A": "T1",
     "B": "T2"
 }
 
-# Спеціалізовані приміщення
 special_rooms = {
     "PE": "Gym",
     "Music": "MusicRoom"
@@ -31,12 +27,10 @@ classes = ["A", "B"]
 days = 5
 lessons_per_day = 5
 
-# Параметри ГА
 POP_SIZE = 20
 GENERATIONS = 100
 MUTATION_RATE = 0.15
 
-# --- ФУНКЦІЇ РОБОТИ З ДАНИМИ ---
 def save_data(filename="school_data.json"):
     data = {
         "subjects": subjects,
@@ -66,7 +60,6 @@ def create_random_schedule():
         schedule.append(class_schedule)
     return schedule
 
-# --- ГЕНЕТИЧНИЙ АЛГОРИТМ ---
 def fitness(schedule):
     penalty = 0
     for c in range(len(classes)):
@@ -82,20 +75,17 @@ def fitness(schedule):
             for l in range(lessons_per_day):
                 subject, teacher, room = day[l]
 
-                # Перевірка на "вікна" (якщо в моделі є None, але тут ми заповнюємо все)
                 if subject is not None:
                     started = True
                     if gap: penalty += 10
                 else:
                     if started: gap = True
 
-                # Конфлікт вчителя (один вчитель у двох класах одночасно)
                 key_t = (teacher, d, l)
                 if key_t in teacher_time:
                     penalty += 15
                 teacher_time.add(key_t)
 
-                # Конфлікт кабінету (особливо Gym та MusicRoom)
                 key_r = (room, d, l)
                 if key_r in room_time:
                     penalty += 15
@@ -103,11 +93,10 @@ def fitness(schedule):
 
                 teacher_count[teacher] = teacher_count.get(teacher, 0) + 1
 
-        # Перевірка умови класного керівника (мінімум 50% уроків)
         main_teacher = main_teachers[classes[c]]
         total_lessons = days * lessons_per_day
         if teacher_count.get(main_teacher, 0) < total_lessons * 0.5:
-            penalty += 50  # Високий штраф за невиконання головної умови завдання
+            penalty += 50
 
     return penalty
 
@@ -141,7 +130,7 @@ def genetic_algorithm():
         if best_fit == 0:
             break
 
-        new_pop = population[:5] # Елітизм
+        new_pop = population[:5]
         while len(new_pop) < POP_SIZE:
             p1, p2 = random.sample(population[:10], 2)
             child = mutate(crossover(p1, p2))
@@ -150,11 +139,8 @@ def genetic_algorithm():
 
     return sorted(population, key=fitness)[0]
 
-# --- ВИВІД ТА ЗВІТНІСТЬ ---
 def print_schedule_with_report(schedule):
-    print("\n" + "█"*50)
     print("ОПТИМІЗОВАНИЙ РОЗКЛАД ЗАНЯТЬ")
-    print("█"*50)
 
     for c in range(len(classes)):
         class_name = classes[c]
@@ -165,7 +151,6 @@ def print_schedule_with_report(schedule):
         print(f"{'Урок':<6} | {'Понеділок':<12} | {'Вівторок':<12} | {'Середа':<12} | {'Четвер':<12} | {'П’ятниця':<12}")
         print("-" * 45)
 
-        # Для красивого виводу по рядках (уроки 1-5)
         teacher_load = 0
         total_lessons = 0
 
@@ -180,13 +165,12 @@ def print_schedule_with_report(schedule):
                     teacher_load += 1
             print(" | ".join(f"{item:<12}" for item in row))
 
-        # Підсумок умови
         percentage = (teacher_load / total_lessons) * 100
         is_ok = teacher_load >= (total_lessons * 0.5)
 
         print("-" * 45)
         print(f"ЗВІТ: Керівник {main_teacher} веде {teacher_load} з {total_lessons} уроків.")
-        print(f"Навантаження: {percentage:.1f}% | Умова >= 50%: {'✅ ВИКОНАНО' if is_ok else '❌ НЕ ВИКОНАНО'}")
+        print(f"Навантаження: {percentage:.1f}% | Умова >= 50%: {' ВИКОНАНО' if is_ok else ' НЕ ВИКОНАНО'}")
         print("-" * 45)
 
 if __name__ == "__main__":

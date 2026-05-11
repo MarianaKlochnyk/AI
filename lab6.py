@@ -1,5 +1,5 @@
 import math
-import random  # Додаємо бібліотеку для випадкових чисел
+import random  
 
 HUMAN = "X"
 AI = "O"
@@ -52,15 +52,12 @@ def minimax(board, is_ai):
         return best_score
 
 def ai_move(board, difficulty=0.3):
-    # Додаємо шанс на помилку
     if random.random() < difficulty:
-        # Випадковий хід (ШІ "тупить")
         available_moves = [i for i, spot in enumerate(board) if spot == EMPTY]
         move = random.choice(available_moves)
         board[move] = AI
         return
 
-    # Якщо ШІ не "тупить", робить ідеальний хід за Minimax
     best_score = -math.inf
     best_move = None
     for i in range(9):
@@ -87,8 +84,6 @@ def human_move(board):
 
 def play():
     board = create_board()
-    # Можеш налаштувати складність тут: 
-    # 0.0 - непереможний, 0.5 - дуже часто помиляється, 1.0 - повний рандом
     diff = 0.4 
     
     print(f"Гра починається! Рівень помилок комп'ютера: {diff*100}%")
